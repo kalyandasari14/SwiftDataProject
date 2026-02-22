@@ -11,32 +11,33 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \User.name) var users: [User]
-    @State private var path = [User]()
+    
     
         
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             List(users){ user in
                 NavigationLink(value: user){
                     Text(user.name)
                 }
             }.navigationTitle("users")
-                .navigationDestination(for: User.self){ user in
-                    EditUserView(user: user)
-                    
-                }
                 .toolbar{
-                    Button("add", systemImage: "plus"){
-                        let user = User(name: "", city: "", joinDate: .now)
-                            modelContext.insert(user)
-                        path = [user]
+                    Button("Add Samples", systemImage: "plus"){
+                    try? modelContext.delete(model : User.self)
+                        let firstUser = User(name: "Ed sheeran", city: "Newyork", joinDate: .now.addingTimeInterval(86400 * -10))
+                        let secondUser = User(name: "Rihanna", city: "Las vegas", joinDate: .now.addingTimeInterval(86400 * -5))
+                        let thirdUser = User(name: "Bad Bunny", city: "Austin", joinDate: .now.addingTimeInterval(86400 * 5))
+            
+                            modelContext.insert(firstUser)
+                            modelContext.insert(secondUser)
+                            modelContext.insert(thirdUser)
+                       
                     }
                 }
-            
+                }
         }
-        .padding()
     }
-}
+
 
 #Preview {
     do{
